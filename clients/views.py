@@ -12,6 +12,9 @@ from django.views import View
 # Create your views here.
 
 class Clientes(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self,request):
         clientes=list(Client.objects.values())

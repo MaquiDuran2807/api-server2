@@ -26,9 +26,7 @@ class Carreras(View):
         jd=json.loads(request.body)
         print(request.headers)
         
-        datos = {'message': "Success",'servicios':'peticion en proceso'}
-        return JsonResponse(datos)
-    """ serviciosgeneral=[]
+        serviciosgeneral=[]
         listapop=['id','identification','genero','token']
         jd=json.loads(request.body)
         print(jd)
@@ -66,7 +64,9 @@ class Carreras(View):
             #Services.objects.create(cliente_id=jd['cliente_id'],conductor_id=jd['conductor_id'],lat=jd['lat'],lng=jd['lng'])
             cache.set('carreras',serviciosgeneral,timeout=None)
             
-            print('esta es la concatenacion ')"""
+            print('esta es la concatenacion ')
+            datos = {'message': "Success",'servicios':'peticion en proceso'}
+            return JsonResponse(datos)
         
         
 
