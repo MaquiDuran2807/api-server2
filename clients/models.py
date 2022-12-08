@@ -12,13 +12,14 @@ class Client(models.Model):
 
     # TODO: Define fields here
 
-    token = models.CharField( max_length=300,db_index=True)
+    token = models.CharField( max_length=300,db_index=True,blank=True)
     identification = models.IntegerField(verbose_name='cedula')
     name = models.CharField( max_length=50)
     lastname = models.CharField( max_length=50)
     genero = models.CharField( max_length=2,choices=generos,default='femenino')
-    email = models.EmailField( max_length=254)
-    img = models.ImageField( upload_to=None, height_field=None, width_field=None, max_length=None)
+    email = models.EmailField( max_length=254,db_index=True,unique=True)
+    img = models.ImageField( upload_to='Client', height_field=None, width_field=None, max_length=None)
+    imgcc = models.ImageField(verbose_name='documento de identidad', upload_to='Client', height_field=None, width_field=None, max_length=None,blank=True)
     tel = models.IntegerField(verbose_name='numero celular')
     
 
