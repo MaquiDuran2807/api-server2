@@ -8,6 +8,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.views import View
+from django.views.generic import CreateView
+from .forms import ClientForm
 
 # Create your views here.
 
@@ -32,6 +34,27 @@ class Clientes(View):
         cliente=list(cliente.values())
         datos={"cliente":cliente}
         return JsonResponse(datos)
+
+
+        
+
+class ClientCreateView(CreateView):
+    model = Client
+    template_name = "add_clients.html"
+    form_class=ClientForm
+    
+
+        
+
+"""class AddClientes(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self,request):
+        ac=json.loads(request.body)
+        Client.objects.create(token= ,identification= ,name= ,lastname= ,genero= ,email= ,)
+"""
 
 
 

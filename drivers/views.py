@@ -8,6 +8,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.views import View
+from django.views.generic import CreateView
+from .forms import DriverForm
 
 # Create your views here.
 
@@ -22,3 +24,9 @@ class Conductores(View):
         datos={'clients':clientes}
         print(clientes)
         return JsonResponse(datos)
+
+class DriverCreateView(CreateView):
+    model = Driver
+    template_name = "add_driver.html"
+    form_class=DriverForm
+     
