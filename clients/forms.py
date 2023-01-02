@@ -8,4 +8,4 @@ class ClientForm(ModelForm):
         """Meta definition for Clientform."""
 
         model = Client
-        fields = ('__all__')
+        fields = ('identification','name','lastname','genero','email','img','imgcc','tel')

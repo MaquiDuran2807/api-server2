@@ -8,7 +8,7 @@ from django.views import View
 from clients.models import Client,Calificacion
 from django.core.cache import cache
 from datetime import datetime 
-from django.db.models import Avg
+from django.db.models import Avg,Max
 from geopy.distance import geodesic
 
 
@@ -28,11 +28,11 @@ class ClientCarreras(View):
         jd=json.loads(request.body)#decoifica el mensaje que envian como json via http
         print(jd)
         serviciosgeneral=[]#se acumulan los datos en una lista de diccionarios con la informacion de las carreras para luego guardarlas en cache
-        listapop=['identification','genero','token']# lista de llaves para eliminar del diccionario lo que no necesitamosque pase
+        listapop=['identification','genero','token','email','imgcc']# lista de llaves para eliminar del diccionario lo que no necesitamosque pase
         servicios=list(Client.objects.filter(token=jd['cliente_id']).values())#consulta los datos del cliente 
         calificacion=Calificacion.objects.filter(usuario=servicios[0]['id']).aggregate(Avg('calificaciones'))#consulta la calificacion del cliente
         if calificacion['calificaciones__avg']==None:
-            servicios[0]['calificacion']=20
+            servicios[0]['calificacion']=0
         else:    
             servicios[0]['calificacion']=calificacion.get('calificaciones__avg')
         for i in listapop:
@@ -43,7 +43,7 @@ class ClientCarreras(View):
         ahora=str(ahora)
         servicios[0]['hora_peticion']=ahora
         carrerascache=cache.get('carreras')
-        datos = {'message': "Success",'servicios':'peticion en proceso','consultar': ahora+str(servicios[0]['id'])}
+        datos = {'message': "Success",'servicios':'peticion en proceso','consultar': ahora+str(servicios[0]['id']),"horaPeticion":ahora}
         if carrerascache==None:
             serviciosgeneral.append( servicios)
             cache.set('carreras',serviciosgeneral)
@@ -54,7 +54,7 @@ class ClientCarreras(View):
 
             serviciosgeneral.append( servicios)
             cache.set('carreras',serviciosgeneral,timeout=None)
-            datos = {'message': "Success",'servicios':'peticion en proceso'}
+            datos = {'message': "Success",'servicios':'peticion en proceso','consultar': ahora+str(servicios[0]['id']),"horaPeticion":ahora}
             return JsonResponse(datos)
         
         
@@ -90,8 +90,8 @@ class DriverServecesActiv(View):
             disdriver=(ds["ubicacion"]["lat"],ds["ubicacion"]["lng"])
             disclient=(x[0]["coordenadas"]["recogida"]["lat"],x[0]["coordenadas"]["recogida"]["lng"])
             distance=geodesic(disdriver,disclient).km
-            if distance<1:
-                x[0]["distancia_cliente"]=distance
+            if distance<=1:
+                x[0]["distancia_cliente"]=distance*1000
                 inrange.append(x)
 
         datos={"estado":inrange}
@@ -110,10 +110,11 @@ class DriverTakeService(View):
         take=False
         dt=json.loads(request.body) 
         conduc=list(Client.objects.filter(token=dt["token"]).values())#consulta que usuario exista falta validar
+        cliente=Client.objects.get(pk=dt['id'])
         calificacion=Calificacion.objects.filter(usuario=conduc[0]['id']).aggregate(Avg('calificaciones'))#consulta la calificacion del cliente
         
         if calificacion['calificaciones__avg']==None:
-            conduc[0]['calificacion']=20
+            conduc[0]['calificacion']=0.0
         else:    
             conduc[0]['calificacion']=calificacion.get('calificaciones__avg')
         
@@ -123,11 +124,19 @@ class DriverTakeService(View):
         for x in cache_carreras:
             print(f'el valor de {str(x[0]["hora_peticion"])} el valor de {dt["hora_peticion"]} ')
             if x[0]["id"]==dt['id'] and str(x[0]["hora_peticion"])==dt["hora_peticion"]:
+                dista=x[0]["viaje"]["distancia"]
+                dista=str(dista)
+                dista=dista.replace('km',"")
+                dista=float(dista)
+
+                print(dista)
                 print('este es x: ',x)
                 horapeticion= str(x[0]["hora_peticion"])
                 horatake=str(datetime.now())
                 print('estas son las horas pasadas por strstripe',horapeticion,horatake)
-                Services.objects.create(client_id=dt['id'], conductor_id=conduc[0]['id'], latori=x[0]["coordenadas"]["recogida"]['lat'], lngori=x[0]["coordenadas"]["recogida"]['lng'], latdes=x[0]["coordenadas"]["destino"]['lat'], lngdes=x[0]["coordenadas"]["destino"]['lng'], distance=x[0]["viaje"]["distancia"], testimado=x[0]["viaje"]["testimado"], precio=x[0]["viaje"]["precio"], tpedido = horapeticion, ttake= horatake)
+                print("este es el id del conductor: ",conduc[0]['id'],type(conduc[0]['id']) ," y este el del cliente",dt['id'],type(dt['id']),cliente.pk)
+
+                Services.objects.create(client_id=cliente.pk, conductor_id=conduc[0]['id'], latori=x[0]["coordenadas"]["recogida"]['lat'], lngori=x[0]["coordenadas"]["recogida"]['lng'], latdes=x[0]["coordenadas"]["destino"]['lat'], lngdes=x[0]["coordenadas"]["destino"]['lng'], distance=dista, testimado=x[0]["viaje"]["testimado"], precio=x[0]["viaje"]["precio"], tpedido = horapeticion, ttake= horatake)
                 take=True
                 
                  
@@ -135,7 +144,7 @@ class DriverTakeService(View):
                 acumcarreras.append(x)
         
         if take==True:
-            cache.set("carreras",acumcarreras,timeout=6000)
+            cache.set("carreras",acumcarreras,timeout=None)
             idriv= 'carrerastake'+str(x[0]["hora_peticion"])+str(dt['id'])
             cache.set(idriv,conduc)
             datos={"peticion":"tomada, buen viaje","llave":idriv,"hora_pedido":horapeticion}
@@ -206,12 +215,24 @@ class Prices(View):
 
 
     def get(self,request):
-        preciocach=cache.get('precio')
-        if preciocach==None:
-            precio=list(Price.objects.all().values())
-            preciocach=precio
-        datos={"precios":preciocach}
+        
+        precio=str(Price.objects.all().last())
+        precioh=list(Price.objects.filter(fechainit=precio).values())
+        
+        datos={"precios":precioh}
         return JsonResponse(datos)
+
+class ResetallView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+        
+
+
+    def get(self,request):
+        cache.delete('carreras')
+        carrera23=cache.get('carreras')
+        return JsonResponse({"datos borrados":carrera23})
         
 
 

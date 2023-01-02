@@ -1,10 +1,12 @@
 
 
 from django.urls import path
-from .views import Clientes,ClientCreateView
+from .views import Clientes,ClientCreateView,ClientesInfo,ClientesCalification,ClientesNotification
 
 urlpatterns = [
-    path('',Clientes.as_view()),
+    path('<int:id>',Clientes.as_view()),
     path('addclient',ClientCreateView.as_view()),
-
+    path('clientinfo',ClientesInfo.as_view()),
+    path('clientcalification',ClientesCalification.as_view()),
+    path('clientnotifica',ClientesNotification.as_view()),
 ]

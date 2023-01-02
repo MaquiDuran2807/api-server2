@@ -13,6 +13,7 @@ class Client(models.Model):
     # TODO: Define fields here
 
     token = models.CharField( max_length=300,db_index=True,blank=True)
+    tokenNotifi=models.CharField( max_length=400,db_index=True,blank=True)
     identification = models.IntegerField(verbose_name='cedula')
     name = models.CharField( max_length=50)
     lastname = models.CharField( max_length=50)
@@ -21,6 +22,7 @@ class Client(models.Model):
     img = models.ImageField( upload_to='Client', height_field=None, width_field=None, max_length=None)
     imgcc = models.ImageField(verbose_name='documento de identidad', upload_to='Client', height_field=None, width_field=None, max_length=None,blank=True)
     tel = models.IntegerField(verbose_name='numero celular')
+    is_active = models.BooleanField(default=False)
     
 
 
@@ -77,6 +79,25 @@ class Calificacion(models.Model):
     def __str__(self):
         """Unicode representation of calificacion."""
         return str(self.usuario)+' calificacion: '+str(self.calificaciones)
+
+class Saldo(models.Model):
+    """Model definition for saldo."""
+
+    # TODO: Define fields here
+    usuario = models.ForeignKey(Client, on_delete=models.CASCADE)
+    saldo = models.IntegerField()
+    frecarga = models.DateTimeField(verbose_name="fecha recarga", auto_now=False, auto_now_add=False)
+
+    class Meta:
+        """Meta definition for saldo."""
+
+        verbose_name = 'saldo_cliente'
+        verbose_name_plural = 'saldos'
+
+    def __str__(self):
+        """Unicode representation of saldo."""
+        return str(self.frecarga)
+
 
 
 

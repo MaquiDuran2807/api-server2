@@ -11,8 +11,8 @@ class Services(models.Model):
     """Model definition for Services."""
 
     # TODO: Define fields here
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    conductor = models.ForeignKey(Driver, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE,db_constraint=False)
+    conductor = models.ForeignKey(Client, on_delete=models.CASCADE,db_constraint=False,related_name='conductor')
     latori = models.FloatField()
     lngori = models.FloatField()
     latdes = models.FloatField()
@@ -20,10 +20,11 @@ class Services(models.Model):
     distance=models.FloatField()
     testimado = models.CharField( max_length=10)
     precio=models.IntegerField()
-    cancelc = models.IntegerField( null=True,blank=True)#0 no cancelado,1 cancelado cliente, 2 cancelado conductor
-    tterminado=models.DateTimeField(verbose_name='pedido', auto_now=False, auto_now_add=False,null=True,blank=True)
+    cancelc = models.IntegerField( null=True,blank=True)# 1 cancelado conductor, 2 cancelado cliente,
+    tterminado=models.DateTimeField(verbose_name='terminado', auto_now=False, auto_now_add=False,null=True,blank=True)
     tpedido = models.DateTimeField(verbose_name='pedido', auto_now=False, auto_now_add=False)
     ttake = models.DateTimeField(verbose_name='tomado', auto_now=False, auto_now_add=False)
+
     
 
 
@@ -34,8 +35,7 @@ class Services(models.Model):
 
         verbose_name = 'Services'
         verbose_name_plural = 'Services'
-    def __str__(self):
-        return str(self.id)
+    
 
 
 class Price(models.Model):
@@ -56,6 +56,8 @@ class Price(models.Model):
     def __str__(self):
         """Unicode representation of Price."""
         return str(self.fechainit)
+
+
         
 
 

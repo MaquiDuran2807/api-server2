@@ -1,5 +1,6 @@
 from django.db import models
 from clients.models import Client
+from cars.models import Auto
 
 # Create your models here.
 
@@ -11,6 +12,7 @@ class Driver(models.Model):
     licencia = models.IntegerField()
     imglicencia = models.ImageField( upload_to='DRIVE', height_field=None, width_field=None, max_length=None)
     imgantecedentes = models.ImageField( upload_to='DRIVE', height_field=None, width_field=None, max_length=None)
+    autos = models.ManyToManyField(Auto)
     
 
 
