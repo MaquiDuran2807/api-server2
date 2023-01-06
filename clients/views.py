@@ -14,6 +14,8 @@ from django.views.generic import CreateView
 from .forms import ClientForm
 from serveces.models import Services
 from datetime import datetime 
+#importar reverse
+from django.urls import reverse
 
 
 # Create your views here.
@@ -66,6 +68,32 @@ class ClientCreateView(CreateView):
     model = Client
     template_name = "add_clients.html"
     form_class=ClientForm
+
+    # funcion para guardar el cliente
+    def form_valid(self, form):
+        print(form,"======================")
+        form.save()
+        return super().form_valid(form)
+
+    # funcion para redireccionar a la pagina de inicio
+    def get_success_url(self):
+        return reverse('home:home')
+
+
+class ClientDriverCreateView(CreateView):
+    model = Client
+    template_name = "add_clients.html"
+    form_class=ClientForm
+
+    # funcion para guardar el cliente
+    def form_valid(self, form):
+        print(form,"======================")
+        form.save()
+        return super().form_valid(form)
+
+    # funcion para redireccionar a la pagina de inicio
+    def get_success_url(self):
+        return reverse('drivers:adddriver')
 
 
 class ClientesInfo(View):
@@ -137,6 +165,7 @@ class ClientesNotification(View):
         return JsonResponse({'token':'se agrego el token'})
 
 
+# crear vista para ingresar conductores
 
 """class AddClientes(View):
     @method_decorator(csrf_exempt)

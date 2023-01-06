@@ -1,11 +1,40 @@
-from django.forms import ModelForm
+from django import forms
 from .models import Driver
 
-class DriverForm(ModelForm):
+class DriverForm(forms.Form):
     """Form definition for Client."""
+    choicessi=[('si','si'),('no','no')]
 
-    class Meta:
-        """Meta definition for Clientform."""
-
-        model = Driver
-        fields = ('__all__')
+    verificar_email = forms.EmailField()
+    verificar_email.widget.attrs.update({'class': 'form-control col-2'})
+    licencia = forms.IntegerField()
+    licencia.widget.attrs.update({'class': 'form-control'})
+    imagen_licencia = forms.ImageField()
+    imagen_licencia.widget.attrs.update({'class': 'form-control'})
+    imagen_antecedentes = forms.ImageField()
+    imagen_antecedentes.widget.attrs.update({'class': 'form-control'})
+    imagen_cedula = forms.ImageField(help_text='cedula de ciudadania')
+    imagen_cedula.widget.attrs.update({'class': 'form-control'})
+    es_propietario = forms.ChoiceField(widget=forms.RadioSelect, choices=choicessi,)
+    es_propietario.widget.attrs.update({'class': 'form-check-input-inline'})
+    propietario = forms.CharField(max_length=50,help_text="si es propietario no llenar este campo")
+    propietario.widget.attrs.update({'class': 'form-control'})
+    marca = forms.CharField(max_length=50)
+    marca.widget.attrs.update({'class': 'form-control'})
+    referencia = forms.CharField(max_length=50)
+    referencia.widget.attrs.update({'class': 'form-control'})
+    modelo = forms.IntegerField()
+    modelo.widget.attrs.update({'class': 'form-control'})
+    imgcarro = forms.ImageField()
+    imgcarro.widget.attrs.update({'class': 'form-control'})
+    imagen_soat = forms.ImageField()
+    imagen_soat.widget.attrs.update({'class': 'form-control'})
+    imagen_vehiculo = forms.ImageField()
+    imagen_vehiculo.widget.attrs.update({'class': 'form-control'})
+    imagen_tarjetapropiedad = forms.ImageField()
+    imagen_tarjetapropiedad.widget.attrs.update({'class': 'form-control'})
+    placa = forms.CharField(max_length=50)
+    placa.widget.attrs.update({'class': 'form-control'})
+    color = forms.CharField(max_length=50)
+    color.widget.attrs.update({'class': 'form-control'})
+    terminos = forms.BooleanField(label='Acepto los terminos y condiciones')

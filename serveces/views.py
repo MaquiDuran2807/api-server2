@@ -39,6 +39,7 @@ class ClientCarreras(View):
             servicios[0].pop(i)
         servicios[0]['coordenadas']=jd['coordenadas']
         servicios[0]['viaje']=jd['viaje']
+        servicios[0]['socketid']=jd['socketid']
         ahora=datetime.now()
         ahora=str(ahora)
         servicios[0]['hora_peticion']=ahora

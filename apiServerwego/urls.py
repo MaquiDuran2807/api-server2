@@ -23,6 +23,7 @@ urlpatterns = [
     path('carreras/', include('serveces.urls')),
     path('clients/', include('clients.urls')),
     path('drivers/', include('drivers.urls')),
+    path('', include('home.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

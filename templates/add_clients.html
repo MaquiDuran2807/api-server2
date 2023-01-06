@@ -4,13 +4,75 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Estilos de boostrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <title>Document</title>
 </head>
 <body>
-    <form action="#" method="post">
-        {% csrf_token %}
-        {{form}}
-        <button type="submit"></button>
-    </form>
+    
+    <!-- Formulario con estilos de boostrap del form de client -->
+    <div class="container" style="background-color: bisque;" >
+        <h1>Registro</h1>
+        <h4>Por su seguridad y la de los demas miembros de la comunidad WEGO, estaremos verificando los datos suministrados
+            para su aprobación en la plataforma. 
+        </h4>
+        <h6>
+            <ul style="font-size: 20px;">
+                <li>Por favor, asegúrese de que los datos suministrados sean correctos.</li>
+                <li>Los datos suministrados serán verificados por el administrador de la plataforma.</li>
+                <li>Una vez aprobado, recibirá un correo electrónico de confirmación.</li>
+                <li>Luego de registrarse, es requerido enviar la solicitud a facebook </li>
+            </ul>
+        </h6>
+        <h5 style="color: darkred;">Gracias por comprender </h5>
+        <br>
+        <div class="column" style="background-color: bisque;">
+            <br>
+            <h4>Formulario de registro</h4>
+            <br>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-6">
+                        <label for="identification">Identificación</label>
+                        {{ form.identification }}
+                    </div>
+                    <div class="col-6">
+                        <label for="name">Nombre</label>
+                        {{ form.name }}
+                    </div>
+                    <div class="col-6">
+                        <label for="last_name">Apellido</label>
+                        {{ form.lastname }}
+                    </div>
+                    <div class="col-6">
+                        <label for="email">Correo</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="col-6">
+                        <label for="tel">Teléfono</label>
+                        {{ form.tel }}
+                    </div>
+                    <div class="col-6">
+                        <label for="genero">Genero</label>
+                        {{ form.genero }}
+                    </div>
+                    <div class="col-12">
+                        <label for="img">tu Foto</label>
+                        {{ form.img }}
+                        <br>
+                    
+                </div>
+                <div class="col-6">
+                    <button  type="submit" class="btn btn-primary">Registrarse</button>
+                </div>
+                
+                
+            </form>
+
+        </div>
+
+    </div>
+    
 </body>
 </html>

@@ -13,11 +13,12 @@ class Auto(models.Model):
     marca = models.CharField( max_length=50)
     referencia = models.CharField( max_length=50)
     modelo = models.IntegerField()
-    imgcarro = models.ImageField(verbose_name='carro', upload_to='car', height_field=None, width_field=None, max_length=None)
     imgsoat = models.ImageField(verbose_name='soat', upload_to='car', height_field=None, width_field=None, max_length=None)
     imgauto = models.ImageField(verbose_name='foto del auto', upload_to='car', height_field=None, width_field=None, max_length=None)
     imgtarjetapropi = models.ImageField(verbose_name='foto de la tarjeta de propiedad', upload_to=None, height_field=None, width_field=None, max_length=None)
-
+    numero_placa = models.CharField( db_index=True, max_length=50)
+    color = models.CharField( max_length=50)
+    es_propio = models.BooleanField(default=True)
 
 
     class Meta:

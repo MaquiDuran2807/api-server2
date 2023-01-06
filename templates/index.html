@@ -1,0 +1,441 @@
+
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+	<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>We Go &mdash; Viaje seguro en ibagué </title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Free HTML5 Template by FREEHTML5.CO" />
+	<meta name="keywords" content="free html5, free template, free bootstrap, html5, css3, mobile first, responsive" />
+	<meta name="author" content="FREEHTML5.CO" />
+
+	<meta property="og:title" content=""/>
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content=""/>
+	<meta property="og:site_name" content=""/>
+	<meta property="og:description" content=""/>
+	<meta name="twitter:title" content="" />
+	<meta name="twitter:image" content="" />
+	<meta name="twitter:url" content="" />
+	<meta name="twitter:card" content="" />
+
+	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+	<link rel="shortcut icon" href="favicon.ico">
+
+	<link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+	
+	<!-- Animate.css -->
+	<link rel="stylesheet" href="{% static 'css_files/animate.css' %}" type="text/css">
+	<!-- Icomoon Icon Fonts-->
+	<link rel="stylesheet" href="{% static 'css_files/icomoon.css' %}">
+	<!-- Simple Line Icons -->
+	<link rel="stylesheet" href="{% static 'css_files/simple-line-icons.css' %}">
+	<!-- Bootstrap  -->
+	<link rel="stylesheet" href="{% static 'css_files/bootstrap.css' %}">
+	<!-- Owl Carousel  -->
+	<link rel="stylesheet" href="{% static 'css_files/owl.carousel.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css_files/owl.theme.default.min.css' %}">
+	<!-- Style -->
+	<link rel="stylesheet" href="{% static 'css_files/style.css' %}">
+
+
+	<!-- Modernizr JS -->
+	<script src="{% static 'js/modernizr-2.6.2.min.js' %}"></script>
+	<!-- FOR IE9 below -->
+	<!--[if lt IE 9]>
+	<script src="{% static 'js/respond.min.js' %}"></script>
+	<![endif]-->
+
+	</head>
+	<body>
+	<header role="banner" id="fh5co-header">
+		<div class="fluid-container">
+			<nav class="navbar navbar-default">
+				<div class="navbar-header">
+					<!-- Mobile Toggle Menu Button -->
+					<a href="#" class="js-fh5co-nav-toggle fh5co-nav-toggle" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><i></i></a>
+					<a class="navbar-brand" href="index.html"><span>WE</span><span style="color: #630000;">GO</span></a> 
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#" data-nav-section="explore"><span>Nuestro interés</span></a></li>
+						<li><a href="#" data-nav-section="services"><span>Servicios</span></a></li>
+						<li><a href="#" data-nav-section="team"><span>Team</span></a></li>
+						<li><a href="#" data-nav-section="faq"><span>FAQ</span></a></li>
+					</ul>
+				</div>
+			</nav>
+	</div>
+	</header>
+
+	<section id="fh5co-home" data-section="home" style="background: url(media/{{casa.image}});" data-stellar-background-ratio="0.5">
+		<div class="gradient "></div>
+		<div >
+			
+			<div class="text-wrap">
+				<div class="text-inner">
+					<div class="row">
+						<div class="col-md-8 col-md-offset-2">
+							<h1 class="to-animate"> WE GO <br> {{casa.title}}</h1>
+							<h2 class="to-animate"> <image src="{% static 'images/ibague.png' %}" heigt="40px" width="40px"></image>{{casa.subtitle}} <hr> {{casa.description}}🚗 </h2>
+							<div class="call-to-action">
+								<a href="{% url 'clients:addclient' %}" class="demo to-animate">Registrate</a>
+								<a href="{% url 'clients:addclientdriver' %}" class="download to-animate">Registrae como conductor</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="fh5co-explore" data-section="explore">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 section-heading text-center">
+					<h2 class="to-animate">{{explore.title}}</h2>
+					<div class="row">
+						<div class="col-md-8 col-md-offset-2 subtext to-animate">
+							<h3>{{explore.subtitle}} <br> {{explore.texto}}.</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="fh5co-explore">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-8 col-md-push-5 to-animate-2">
+						<img class="img-responsive" src="media/{{explore.image1}}" alt="work">
+					</div>
+					<div class="col-md-4 col-md-pull-8 to-animate-2">
+						<div class="mt">
+							<h3>¿POR QUE USAR WE GO?</h3>
+							<p> {{explore.description}} </p>
+							<ul class="list-nav">
+								<li><i class="icon-check2"></i>{{explore.item1}}</li>
+								<li><i class="icon-check2"></i>{{explore.item2}}</li>
+								<li><i class="icon-check2"></i>{{explore.item3}}</li>
+								<li><i class="icon-check2"></i>{{explore.item4}}</li>
+								<li><i class="icon-check2"></i>{{explore.item5}}</li>
+							</ul>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+
+		<div class="fh5co-explore fh5co-explore-bg-color">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-8 col-md-pull-1 to-animate-3">
+						<img class="img-responsive" src="media/{{explore.image2}}"  alt="work">
+					</div>
+					<div class="col-md-4 to-animate-3">
+						<div class="mt">
+							<div>
+								<h4><i class="icon-people"></i>{{explore.itemtitle1}}</h4>
+								<p>{{explore.itemdescription1}} </p>
+							</div>
+							<div>
+								<h4><i class="icon-video2"></i>{{explore.itentitle2}}</h4>
+								<p>{{explore.itemdescription2}} </p>
+							</div>
+							<div>
+								<h4><i class="icon-shield"></i>{{explore.itemtitle3}}</h4>
+								<p> {{explore.itemdescription3}}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<div class="getting-started getting-started-1">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 to-animate">
+					<h3>Comienza Ya!!</h3>
+					<p>Este es el mejor momento para empezar a movilizarte de manera segura WEGO</p>
+				</div>
+				<div class="col-md-6 to-animate-2">
+					<div class="call-to-action text-right">
+						
+
+						<a href="  {% url 'clients:addclient' %}  " class="sign-up">Registrate gratis</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<section id="fh5co-services" data-section="services">
+		<div class="fh5co-services">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12 section-heading text-center">
+						<h2 class="to-animate">Nuestros Servicios</h2>
+						<div class="row">
+							<div class="col-md-8 col-md-offset-2 subtext">
+								<h3 class="to-animate">{{services.subtitle}}</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<div class="box-services">
+							<i class="icon-chemistry to-animate-2"></i>
+							<div class="fh5co-post to-animate">
+								<h3>{{services.itemtitle1}}</h3>
+								<p>{{services.itemdescription1}}</p>
+							</div>
+						</div>
+
+						<div class="box-services">
+							<i class="icon-energy to-animate-2"></i>
+							<div class="fh5co-post to-animate">
+								<h3>{{services.itemtitle2}}</h3>
+								<p>{{services.itemdescription2}}</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="box-services">
+							<i class="icon-trophy to-animate-2"></i>
+							<div class="fh5co-post to-animate">
+								<h3>{{services.itemtitle3}}</h3>
+								<p>{{services.itemdescription3}}</p>
+							</div>
+						</div>
+
+						<div class="box-services">
+							<i class="icon-paper-plane to-animate-2"></i>
+							<div class="fh5co-post to-animate">
+								<h3>{{services.itemtitle4}}</h3>
+								<p>{{services.itemdescription4}}</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="box-services">
+							<i class="icon-people to-animate-2"></i>
+							<div class="fh5co-post to-animate">
+								<h3>{{services.itemtitle5}}</h3>
+								<p>{{services.itemdescription5}}</p>
+							</div>
+						</div>
+
+						<div class="box-services">
+							<i class="icon-screen-desktop to-animate-2"></i>
+							<div class="fh5co-post to-animate">
+								<h3>{{services.itemtitle6}}</h3>
+								<p>{{services.itemdescription6}}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--<div class="call-to-action text-center to-animate"><a href="#" class="btn btn-learn">Learn More</a></div>-->
+			</div>
+		</div>
+	</section>	
+
+	
+	<section id="fh5co-faq" data-section="faq">
+		<div class="fh5co-faq">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12 section-heading text-center">
+						<h2 class="to-animate"> {{faq.titlef}} </h2>
+						<div class="row">
+							<div class="col-md-8 col-md-offset-2 subtext">
+								<h3 class="to-animate"> {{faq.subtitlef}} </h3>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="box-faq to-animate-2">
+							<h3> {{faq.itemtitle1f}} </h3>
+							<p> {{faq.itemdescription1f}} </p>
+						</div>
+						<div class="box-faq to-animate-2">
+							<h3> {{faq.itemtitle2f}} </h3>
+							<p> {{faq.itemdescription2f}} </p>
+						</div>
+						<div class="box-faq to-animate-2">
+							<h3> {{faq.itemtitle3f}} </h3>
+							<p> {{faq.itemdescription3f}} </p>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div class="box-faq to-animate-2">
+							<h3> {{faq.itemtitle4f}} </h3>
+							<p> {{faq.itemdescription4f}} </p>
+						</div>
+						<div class="box-faq to-animate-2">
+							<h3> {{faq.itemtitle5f}} </h3>
+							<p> {{faq.itemdescription5f}} </p>
+						</div>
+						<div class="box-faq to-animate-2">
+							<h3> {{faq.itemtitle6f}} </h3>
+							<p> {{faq.itemdescription6f}} </p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<hr>
+
+	<section id="fh5co-trusted" data-section="trusted">
+		<div class="fh5co-trusted">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12 section-heading text-center">
+						<h2 class="to-animate">Nuestras redes sociales</h2>
+						<div class="row">
+							<div class="col-md-8 col-md-offset-2 subtext">
+								<h3 class="to-animate">Conoce nuestro contenido en:</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3 col-sm-3 col-xs-6 col-sm-offset-0 col-md-offset-1">
+					<div class="partner-logo to-animate-2">
+						<a href="{{social.facebook}}" target="_blank">
+							<img src="{% static 'images/facebook.png' %}" alt="Partners" class="img-responsive" height="200" width="100"></a>
+				</div>
+					</div>
+				    <div class="col-md-3 col-sm-3 col-xs-6">
+				    	<div class="partner-logo to-animate-2">
+							<a href="{{social.instagram}}">
+				    		<img src="{% static 'images/instagram.png' %}" alt="Partners" class="img-responsive" height="200" width="100">
+							</a>
+						</div>
+				    </div>
+				    <div class="col-md-3 col-sm-3 col-xs-6">
+				    	<div class="partner-logo to-animate-2">
+							<a href="{{social.twitter}}">
+				    		<img src="{% static 'images/tik.png' %}" alt="Partners" class="img-responsive" height="200" width="100">
+							</a>
+						</div>
+				    </div>
+				    <div class="col-md-2 col-sm-3 col-xs-6">
+				    	<div class="partner-logo to-animate-2">
+							<a href="{{social.youtube}}">
+				    		<img src="{% static 'images/social.png' %}" alt="Partners" class="img-responsive" height="200" width="100">
+							</a>
+						</div>
+				    </div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<div class="getting-started getting-started-2">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 to-animate">
+					<h3>REGISTRATE Y APROVEHA LAS VENTAJAS DE WE GO</h3>
+					<p>Toma tu servicio ... Gana como conductor ... Alquila tu carro ... WE GO <image src="{% static 'images/ibague.png' %}" width="40px" height="40px"></p>
+				</div>
+				<div class="col-md-6 to-animate-2">
+					<div class="call-to-action text-right">
+						<a href="{% url 'clients:addclient' %}" class="sign-up">REGISTRATE</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="fh5co-footer" role="contentinfo">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4 to-animate">
+					<h3 class="section-title"></h3>
+					<p> {{contact.description}} </p>
+					<p class="copy-right">&copy; {{copy.title}} <br>All Rights Reserved. <br>
+						Designed by <a href={{copy.url_designed}} target="_blank">MAQUI</a>
+						<!--Demo Images: <a href={{copy.url_image}} target="_blank">Unsplash</a> &amp; Dribbble Image by <a href="https://dribbble.com/tibi_neamu" target="_blank">Tiberiu</a>-->
+					</p>
+				</div>
+
+				<div class="col-md-4 to-animate">
+					<h3 class="section-title">Nuestra Dirección</h3>
+					<ul class="contact-info">
+						<li><i class="icon-map-marker"></i>{{contact.direccion}}</li>
+						<li><i class="icon-phone"></i>+57 {{contact.tel}} </li>
+						<li><i class="icon-envelope"></i><a href="#"> {{contact.email}} </a></li>
+						<li><i class="icon-globe2"></i><a href="#"> {{contact.ul}} </a></li>
+					</ul>
+					<h3 class="section-title">Contactate Con Nosotros</h3>
+					<ul class="social-media">
+						<li><a href="//www.facebook.com/profile.php?id=100089339675522" class="facebook"><i class="icon-facebook"></i></a></li>
+						<li><a href="#" class="twitter"><i class="icon-twitter"></i></a></li>
+						<li><a href="#" class="dribbble"><i class="icon-dribbble"></i></a></li>
+						<li><a href="#" class="github"><i class="icon-github-alt"></i></a></li>
+					</ul>
+				</div>
+				<div class="col-md-4 to-animate">
+					<h3 class="section-title">Escribenos si tienes alguna duda</h3>
+					<form class="contact-form">
+						<div class="form-group">
+							<form method="post">{% csrf_token %}
+							<label for="name" class="sr-only">Name</label>
+							<input type="name" class="form-control" id="name" placeholder="Name">
+						</div>
+						<div class="form-group">
+							<label for="email" class="sr-only">Email</label>
+							<input type="email" class="form-control" id="email" placeholder="Email">
+						</div>
+						<div class="form-group">
+							<label for="message" class="sr-only">Message</label>
+							<textarea class="form-control" id="message" rows="7" placeholder="Message"></textarea>
+						</div>
+						<div class="form-group">
+							<input type="submit" id="btn-submit" class="btn btn-send-message btn-md" value="Send Message">
+						</form>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="map" class="fh5co-map"></div>
+
+	
+	<!-- jQuery -->
+	<script src="{% static 'js/jquery.min.js' %}"></script>
+	<!-- jQuery Easing -->
+	<script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+	<!-- Bootstrap -->
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<!-- Waypoints -->
+	<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+	<!-- Stellar Parallax -->
+	<script src="{% static 'js/jquery.stellar.min.js' %}"></script>
+	<!-- Owl Carousel -->
+	<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+	<!-- Google Map -->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCefOgb1ZWqYtj7raVSmN4PL2WkTrc-KyA&sensor=false"></script>
+	<script src="{% static 'js/google_map.js' %}"></script>
+	<!-- Main JS (Do not remove) -->
+	<script src="{% static 'js/main.js' %}"></script>
+
+	</body>
+</html>
+

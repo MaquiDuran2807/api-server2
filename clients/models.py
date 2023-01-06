@@ -39,15 +39,18 @@ class Client(models.Model):
 class Referido(models.Model):
     """Model definition for Referidos."""
     lazos=[
-        ('familiar','f'),
-        ('amigo','a'),
-        ('conocido','c')
+        ('f','familia'),
+        ('a','amigo'),
+        ('c','conocido')
     ]
+     # TODO: Define fields here
+    # modelo de referidos
+    user = models.ForeignKey(Client, on_delete=models.CASCADE)
+    referidos  = models.ManyToManyField(Client,related_name='referidos',blank=True)
+    
 
-
-    # TODO: Define fields here
-    referidos = models.ForeignKey(Client, on_delete=models.CASCADE)
-    lazo = models.CharField( max_length=50,choices=lazos,default='amigo')
+   
+    lazo = models.CharField( max_length=10,choices=lazos,default='amigo')
 
     class Meta:
         """Meta definition for Referido."""
