@@ -28,8 +28,13 @@ class ClientCarreras(View):
         jd=json.loads(request.body)#decoifica el mensaje que envian como json via http
         print(jd)
         serviciosgeneral=[]#se acumulan los datos en una lista de diccionarios con la informacion de las carreras para luego guardarlas en cache
-        listapop=['identification','genero','token','email','imgcc']# lista de llaves para eliminar del diccionario lo que no necesitamosque pase
-        servicios=list(Client.objects.filter(token=jd['cliente_id']).values())#consulta los datos del cliente 
+        listapop=['identification','genero','token','email','imgcc','is_active']# lista de llaves para eliminar del diccionario lo que no necesitamosque pase
+        
+        servicios=list(Client.objects.filter(token=jd["cliente_id"]).values())#consulta los datos del cliente 
+        print(servicios)
+        if servicios==[]:
+            print(servicios)
+            return JsonResponse ({'message': "Error",'servicios':'no existe el cliente'})
         calificacion=Calificacion.objects.filter(usuario=servicios[0]['id']).aggregate(Avg('calificaciones'))#consulta la calificacion del cliente
         if calificacion['calificaciones__avg']==None:
             servicios[0]['calificacion']=0
@@ -112,6 +117,7 @@ class DriverTakeService(View):
         dt=json.loads(request.body) 
         conduc=list(Client.objects.filter(token=dt["token"]).values())#consulta que usuario exista falta validar
         cliente=Client.objects.get(pk=dt['id'])
+        print(conduc[0]['id'],"este es el id del conductor=======================")
         calificacion=Calificacion.objects.filter(usuario=conduc[0]['id']).aggregate(Avg('calificaciones'))#consulta la calificacion del cliente
         
         if calificacion['calificaciones__avg']==None:
@@ -146,9 +152,7 @@ class DriverTakeService(View):
         
         if take==True:
             cache.set("carreras",acumcarreras,timeout=None)
-            idriv= 'carrerastake'+str(x[0]["hora_peticion"])+str(dt['id'])
-            cache.set(idriv,conduc)
-            datos={"peticion":"tomada, buen viaje","llave":idriv,"hora_pedido":horapeticion}
+            datos={"peticion":"tomada, buen viaje","hora_pedido":horapeticion}
         else:
             datos={"peticion":"el viaje ya ha sido tomado"}
 
