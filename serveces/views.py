@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Services,Price
+from .models import Services,Price,CarrerasNoTomadas
 from django.http.response import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -8,7 +8,13 @@ from django.views import View
 from clients.models import Client,Calificacion
 from django.core.cache import cache
 from datetime import datetime 
-from django.db.models import Avg,Max
+import datetime as dt
+from django.db.models import Avg
+from rest_framework.generics import ListAPIView,CreateAPIView
+from rest_framework.views import APIView,status
+from rest_framework.response import Response
+from .serializers import SerializadorCarreras,SerializadorNear,SerializadorTakeServeces
+from . objects import crearCarreras, nearClient, TakeService
 from geopy.distance import geodesic
 
 
@@ -80,6 +86,59 @@ class ClientCarreras(View):
 
         datos={'clients':carrerascache,'cache_carrerastomadas':tomadas}  
         return JsonResponse(datos)
+
+
+
+class ViewServicesActive(ListAPIView):
+    """vista para mostrar los servicios activos"""
+    serializer_class=SerializadorCarreras 
+    
+    
+    def get_queryset(self):
+        queryset =  crearCarreras()
+        usuario=self.request.user
+        print(f"este es el usuario  {usuario}")
+        print(queryset)
+        return queryset
+    
+class ApiNearClient(APIView):
+    
+    """ Buscar clientes mas cercanos a mi posicion"""
+    
+    def post(self,request,format=True):
+        # tomar la ubicacion del conductor del metodo post
+        lat=self.request.data['lat']
+        lng=self.request.data['lng']
+        carreras= nearClient(lat,lng)
+        serializer=SerializadorCarreras(carreras,many=True)
+        return Response(serializer.data)
+
+class ApiDriverTakeServices(CreateAPIView):
+    """ vista para tomar las carreras de los clientes"""
+    serializer_class= SerializadorTakeServeces
+    
+    
+    def create(self,request,*args,**kwargs):
+        """metodo para tomar las carreras de los clientes"""
+        # tomar el id del conductor y la hora de la peticion de la carrera del metodo post
+        
+        id_de_driver = self.request.data['id_driver']
+        hora_de_peticion = self.request.data['hora_peticion']
+        print(hora_de_peticion)
+        carrera=TakeService(hora_de_peticion)
+        if carrera==[]:
+            return Response({"carrera":"ya ha sido tomada"})
+        # guardar en base de datos el servivicio
+        dista=carrera.viaje["distancia"]
+        dista=str(dista)
+        dista=dista.replace('km',"")
+        dista=float(dista)
+        horatake=str(datetime.now())
+        Services.objects.create(client_id=carrera.id, conductor_id=id_de_driver, latori=carrera.coordenadas["recogida"]['lat'], lngori=carrera.coordenadas["recogida"]['lng'], latdes=carrera.coordenadas["destino"]['lat'], lngdes=carrera.coordenadas["destino"]['lng'], distance=dista, testimado=carrera.viaje["testimado"], precio=carrera.viaje["precio"], tpedido = hora_de_peticion, ttake= horatake)
+        serializer=SerializadorCarreras(carrera)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
 
 class DriverServecesActiv(View):
 
@@ -242,8 +301,73 @@ class ResetallView(View):
 
 
 
+# vista para ver las carreras almacenadas en cache y organizar las carreras no tomadas en mas de 5 minutos y guardarlas en la base de datos
+
+class CarrerasNView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+        
+
+
+    def get(self,request):
+        carreras=cache.get('carreras')
+        acum=[]
+        for x in carreras:
+            if x[0]["hora_peticion"]!=None:
+                hora=datetime.strptime(x[0]["hora_peticion"],"%Y-%m-%d %H:%M:%S.%f")
+                hora =hora.replace(year=hora.year,month=hora.month,day=hora.day)
+                print(type(hora))
+                # hora mas 5 minutos
+                hora_mas_5=hora+dt.timedelta(minutes=5)
+                print("hora mas 5 minutos",hora_mas_5,"type",type(hora_mas_5))
+                horaactual=datetime.now()
+                # eliminar año dia mes para restar datetimes
+                horaactual=horaactual.replace(year=horaactual.year,month=horaactual.month,day=horaactual.day)
+                print(hora)
+                print(horaactual,"type",type(horaactual))
+                diferencia_horas=horaactual-hora
+                x[0]["diferencia_horas"]=diferencia_horas
+                print("hora actual es mayor a hora mas 5 minutos",horaactual>hora_mas_5)
+                if horaactual>hora_mas_5:
+                    acum.append(x)
+                    carreras.remove(x)
+                    print("se elimino")
+                else:
+                    print("no se elimino")
+            else:
+                print("no se elimino")
+        print("este es acum",acum)
+        for x in acum:
+            print(x)
+            dista=x[0]["viaje"]["distancia"]
+            dista=str(dista)
+            dista=dista.replace('km',"")
+            dista=float(dista)
+            precio = x [0]["viaje"]["precio"]
+            cliente= Client.objects.get(id=x[0]["id"])
+            CarrerasNoTomadas.objects.create(cliente=cliente,hora_no_tomada=x[0]["hora_peticion"],distancia=dista,latitud=x[0]["coordenadas"]["recogida"]["lat"],longitud=x[0]["coordenadas"]["recogida"]["lng"],direccion_origen=x[0]["coordenadas"]["recogida"]["direccion"],direccion_destino=x[0]["coordenadas"]["destino"]["direccion"] , precio=precio)
+        cache.set("carreras",carreras,timeout=None)
+        return JsonResponse({"carreras":carreras,"acum":acum,"diferencia de horas":diferencia_horas})
 
 
 
+# vista para recibir peticion post de la app cuando la carrera no fue tomada y guardarla en la base de datos 
 
- 
+class CarrerasNoTomadasView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+        
+
+
+    def post(self,request):
+        cno=json.loads(request.body)
+        dista=cno["viaje"]["distancia"]
+        dista=str(dista)
+        dista=dista.replace('km',"")
+        dista=float(dista)
+        precio = cno ["viaje"]["precio"]
+        cliente= Client.objects.get(id=cno["id"])
+        CarrerasNoTomadas.objects.create(cliente=cliente,hora_no_tomada=cno["hora_peticion"],distancia=dista,latitud=cno["coordenadas"]["recogida"]["lat"],longitud=cno["coordenadas"]["recogida"]["lng"],direccion_origen=cno["coordenadas"]["recogida"]["direccion"],direccion_destino=cno["coordenadas"]["destino"]["direccion"] , precio=precio)
+        return JsonResponse({"carrera no tomada":"carrera no tomada"})

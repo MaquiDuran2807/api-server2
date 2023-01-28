@@ -58,6 +58,23 @@ class Price(models.Model):
         return str(self.fechainit)
 
 
+class  CarrerasNoTomadas(models.Model):
+    """Model definition for NoTTake."""
+    cliente = models.ForeignKey(Client, on_delete=models.CASCADE,db_constraint=False)
+    hora_no_tomada = models.DateTimeField(verbose_name='hora no tomada', auto_now=False, auto_now_add=False)
+    distancia = models.FloatField()
+    precio = models.IntegerField()
+    latitud = models.FloatField()
+    longitud = models.FloatField()
+    direccion_origen = models.CharField(max_length=100)
+    direccion_destino = models.CharField(max_length=100)
+    
+    class meta :
+        verbose_name = 'carrera no tomada'
+        verbose_name_plural = 'carreras no tomadas'
         
+    def __str__(self):
+        """Unicode representation of NoTTake."""
+        return str(self.cliente)+' '+str(self.hora_no_tomada)
 
 

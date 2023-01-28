@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'cars',
     'home',
     #de terceros
+    'rest_framework',
     
    
 ]
