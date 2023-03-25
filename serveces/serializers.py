@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from .models import Services
 
 
 class SerializadorCarreras(serializers.Serializer):
@@ -14,6 +15,12 @@ class SerializadorCarreras(serializers.Serializer):
     coordenadas =serializers.JSONField()
     hora_peticion = serializers.DateTimeField()
     distancias = serializers.FloatField(required=False)
+    id_carrera = serializers.IntegerField(required=False)
+
+class SerializadorCancel(serializers.ModelSerializer):
+    class Meta:
+        model=Services
+        fields = ('cancelc',)
     
 class SerializadorNear(serializers.Serializer):
     

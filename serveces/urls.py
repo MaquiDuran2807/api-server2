@@ -4,7 +4,7 @@
 from django.urls import path
 from .views import (ClientCarreras ,DriverServecesActiv, DriverTakeService,MyService,
                     CancelService,Prices,ResetallView,CarrerasNView,ViewServicesActive,
-                    ApiNearClient,ApiDriverTakeServices)
+                    ApiNearClient,ApiDriverTakeServices,ApiCancel)
 
 urlpatterns = [
     path('',ClientCarreras.as_view() ),
@@ -18,5 +18,6 @@ urlpatterns = [
     path('viewservices',ViewServicesActive.as_view() ),
     path('near',ApiNearClient.as_view()),
     path('takeapi',ApiDriverTakeServices.as_view()),
+    path('cancelapi/<pk>',ApiCancel.as_view()),
     
 ]

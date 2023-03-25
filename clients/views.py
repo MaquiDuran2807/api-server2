@@ -10,12 +10,18 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.db.models import Sum,Avg,Count
 from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import CreateView,ListView
 from .forms import ClientForm
 from serveces.models import Services
 from datetime import datetime 
 #importar reverse
 from django.urls import reverse
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
+# importar cache
+from django.core.cache import cache
+
+
 
 
 # Create your views here.
@@ -56,7 +62,8 @@ class Clientes(View):
         imgen=request.FILES
         imgen=imgen["imagen"]
         print(imgen)
-        Client.objects.create(token=token1,identification=iden,name=cl["name"],lastname=cl["lastname"],genero=cl["genero"],email=cl["correo"],img=imgen,tel=cl["telefono"])
+        cliente=Client.objects.create(token=token1,identification=iden,name=cl["name"],lastname=cl["lastname"],genero=cl["genero"],email=cl["correo"],img=imgen,tel=cl["telefono"])
+        Token.objects.create(user=cliente)
         datos={"cliente":"tegistrado"}
         print('cliente no existe')
         
@@ -68,17 +75,27 @@ class ClientCreateView(CreateView):
     model = Client
     template_name = "add_clients.html"
     form_class=ClientForm
-
-    # funcion para guardar el cliente
-    def form_valid(self, form):
-        print(form,"======================")
-        form.save()
-        return super().form_valid(form)
-
-    # funcion para redireccionar a la pagina de inicio
-    def get_success_url(self):
-        return reverse('home:home')
-
+    
+    def post(self, request) :
+        print("=====================================post =============================")
+        cliente_form=(request.POST)
+        cliente_form_files=(request.FILES)
+        
+        usuario=User.objects.get_or_create(username=cliente_form["email"],password=cliente_form["password"],email=cliente_form["email"])
+        usuario=User.objects.get(username=cliente_form["email"])
+        try:
+            Token.objects.get_or_create(user=usuario)
+        except(KeyError,Client.DoesNotExist):
+            print("error",KeyError,Client.DoesNotExist)
+        cliente=Client.objects.filter(email=cliente_form["email"])
+        if cliente:
+            print("cliente ya existe")
+            return render(request, 'bienvenido.html', {'bienvenido': 'ya estas registrado'})
+        cliente=Client.objects.create(identification=cliente_form["identification"],name=cliente_form["name"],lastname=cliente_form["lastname"],genero=cliente_form["genero"],email=cliente_form["email"],img=cliente_form_files["img"],tel=cliente_form["tel"],usuario=usuario)
+        cache.set(usuario,cliente_form["password"])
+        print ("==========end post============")
+        return render(request, 'bienvenido.html', {'bienvenido': 'Bienvenid@'})
+        
 
 class ClientDriverCreateView(CreateView):
     model = Client
@@ -166,6 +183,18 @@ class ClientesNotification(View):
 
 
 # crear vista para ingresar conductores
+
+class ClientList(ListView):
+    model = Client
+    template_name = "list_clients.html"
+    context_object_name = "clients"
+    
+    def get_queryset(self):
+        today=datetime.now()
+        # obtener ultima fecha en la que se recargo el saldo
+        fecha_recarga= Saldo.objects.all().latest('frecarga')
+        print(fecha_recarga)
+        return Client.objects.all()
 
 """class AddClientes(View):
     @method_decorator(csrf_exempt)

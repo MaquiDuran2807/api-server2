@@ -1,0 +1,37 @@
+{% load static %}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css_files/bienvenido.css' %}" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Josefin+Sans:100,300' rel='stylesheet' type='text/css'>
+
+    <title>Bienvenido</title>
+</head>
+<body>
+
+<div class="cover super-centered-container">
+  <canvas id="can">Get a browser</canvas>
+  <div class="overlay-static">    
+    <div class="inline-blocks">
+      <h2 class="twenty-one block">{{bienvenido}} </h2>
+    </div>
+    <h1 class="bday">  WEGO  </h1>
+    <section>
+        <button class="reg"><a class="face" href="https://www.fb.com/mary.huilcarema.v/" style="color:black">siguenos en facebook</a></button>
+</section>
+
+<div class="pop">
+  <span>✖</span>
+ </div>
+  </div>
+</div>
+<script src="{% static 'js/bienvenida.js' %}"></script>
+</body>
+</html>
+

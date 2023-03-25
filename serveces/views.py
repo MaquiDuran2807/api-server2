@@ -5,15 +5,15 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.views import View
-from clients.models import Client,Calificacion
+from clients.models import Client,Calificacion,Saldo
 from django.core.cache import cache
-from datetime import datetime 
+from datetime import datetime, timedelta
 import datetime as dt
 from django.db.models import Avg
-from rest_framework.generics import ListAPIView,CreateAPIView
+from rest_framework.generics import ListAPIView,CreateAPIView,RetrieveAPIView,UpdateAPIView,DestroyAPIView
 from rest_framework.views import APIView,status
 from rest_framework.response import Response
-from .serializers import SerializadorCarreras,SerializadorNear,SerializadorTakeServeces
+from .serializers import SerializadorCarreras,SerializadorNear,SerializadorTakeServeces,SerializadorCancel
 from . objects import crearCarreras, nearClient, TakeService
 from geopy.distance import geodesic
 
@@ -35,7 +35,6 @@ class ClientCarreras(View):
         print(jd)
         serviciosgeneral=[]#se acumulan los datos en una lista de diccionarios con la informacion de las carreras para luego guardarlas en cache
         listapop=['identification','genero','token','email','imgcc','is_active']# lista de llaves para eliminar del diccionario lo que no necesitamosque pase
-        
         servicios=list(Client.objects.filter(token=jd["cliente_id"]).values())#consulta los datos del cliente 
         print(servicios)
         if servicios==[]:
@@ -50,7 +49,7 @@ class ClientCarreras(View):
             servicios[0].pop(i)
         servicios[0]['coordenadas']=jd['coordenadas']
         servicios[0]['viaje']=jd['viaje']
-        servicios[0]['socketid']=jd['socketid']
+        #servicios[0]['socketid']=jd['socketid']
         ahora=datetime.now()
         ahora=str(ahora)
         servicios[0]['hora_peticion']=ahora
@@ -124,8 +123,19 @@ class ApiDriverTakeServices(CreateAPIView):
         
         id_de_driver = self.request.data['id_driver']
         hora_de_peticion = self.request.data['hora_peticion']
+        id_cliente=self.request.data['id_cliente']
+        horatake=(datetime.now().astimezone())
+        saldo=Saldo.objects.filter(usuario_id=id_de_driver).latest('frecarga')
+        diredencia_dias=(horatake-saldo.frecarga)
+        print(diredencia_dias.days,"este es el numero de dias",timedelta(days=30).days,"este es el numero de dias")
+        if -(diredencia_dias.days)>=timedelta(days=30).days:
+            print("entro al if")
+            saldo=Saldo.objects.create(usuario_id=id_de_driver, saldo=0,frecarga=horatake)
+            print(saldo,"este es el saldo")
+            return Response({"carrera":"no tiene saldo"})
         print(hora_de_peticion)
-        carrera=TakeService(hora_de_peticion)
+        carrera=TakeService(hora_de_peticion,id_cliente)
+        print(carrera,"esta es la carrera")
         if carrera==[]:
             return Response({"carrera":"ya ha sido tomada"})
         # guardar en base de datos el servivicio
@@ -133,10 +143,28 @@ class ApiDriverTakeServices(CreateAPIView):
         dista=str(dista)
         dista=dista.replace('km',"")
         dista=float(dista)
-        horatake=str(datetime.now())
-        Services.objects.create(client_id=carrera.id, conductor_id=id_de_driver, latori=carrera.coordenadas["recogida"]['lat'], lngori=carrera.coordenadas["recogida"]['lng'], latdes=carrera.coordenadas["destino"]['lat'], lngdes=carrera.coordenadas["destino"]['lng'], distance=dista, testimado=carrera.viaje["testimado"], precio=carrera.viaje["precio"], tpedido = hora_de_peticion, ttake= horatake)
+        horatake=(datetime.now().astimezone())
+        saldo=Saldo.objects.filter(usuario_id=id_de_driver).latest('frecarga')
+        diredencia_dias=(horatake-saldo.frecarga)
+        horatake=str(horatake)
+        servicio=Services.objects.create(client_id=carrera.id, conductor_id=id_de_driver, latori=carrera.coordenadas["recogida"]['lat'], lngori=carrera.coordenadas["recogida"]['lng'], latdes=carrera.coordenadas["destino"]['lat'], lngdes=carrera.coordenadas["destino"]['lng'], distance=dista, testimado=carrera.viaje["testimado"], precio=carrera.viaje["precio"], tpedido = hora_de_peticion, ttake= horatake)
         serializer=SerializadorCarreras(carrera)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        serializer.data["id_carrera"]=servicio.id
+        
+        
+        print(serializer.data,"este es el saldo ", saldo,"esta es la diferencia de dias",diredencia_dias.days,"este es el tipo de dato",type(diredencia_dias))
+        if diredencia_dias.days>=30:
+            print("entro al if")
+            saldo=Saldo.objects.create(usuario_id=id_de_driver, saldo=0)
+            print(saldo,"este es el saldo")
+        return Response({"id_carrera":servicio.id,"carrera":serializer.data})
+    
+class ApiCancel(UpdateAPIView):
+    """ vista para cancelar las carreras de los clientes"""
+    
+    queryset=Services.objects.all()
+    serializer_class=SerializadorCancel
+    
 
 
 

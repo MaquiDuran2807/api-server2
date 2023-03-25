@@ -9,7 +9,7 @@ class Driver(models.Model):
     """Model definition for Driver."""
 
     # TODO: Define fields here
-    persona = models.ForeignKey(Client, on_delete=models.CASCADE,unique=True)
+    persona = models.OneToOneField(Client, on_delete=models.CASCADE)
     licencia = models.IntegerField()
     imglicencia = models.ImageField( upload_to='DRIVE', height_field=None, width_field=None, max_length=None)
     imgantecedentes = models.ImageField( upload_to='DRIVE', height_field=None, width_field=None, max_length=None)

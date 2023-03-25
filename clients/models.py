@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 
@@ -10,20 +12,19 @@ class Client(models.Model):
              ('O','otro')
     ]
 
-    # TODO: Define fields here
-
     token = models.CharField( max_length=300,db_index=True,blank=True)
     tokenNotifi=models.CharField( max_length=400,db_index=True,blank=True)
     identification = models.IntegerField(verbose_name='cedula')
     name = models.CharField( max_length=50)
     lastname = models.CharField( max_length=50)
-    genero = models.CharField( max_length=2,choices=generos,default='femenino')
+    genero = models.CharField( max_length=2,choices=generos,default='femenino',blank=True,null=True)
     email = models.EmailField( max_length=254,db_index=True,unique=True)
-    img = models.ImageField( upload_to='Client', height_field=None, width_field=None, max_length=None)
+    img = models.ImageField( upload_to='Client', height_field=None, width_field=None, max_length=None,blank=True)
     imgcc = models.ImageField(verbose_name='documento de identidad', upload_to='Client', height_field=None, width_field=None, max_length=None,blank=True)
     tel = models.IntegerField(verbose_name='numero celular')
-    is_active = models.BooleanField(default=False)
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE,blank=True,null=True)
     
+    is_active = models.BooleanField(default=False)
 
 
     class Meta:
@@ -43,7 +44,7 @@ class Referido(models.Model):
         ('a','amigo'),
         ('c','conocido')
     ]
-     # TODO: Define fields here
+    # TODO: Define fields here
     # modelo de referidos
     user = models.ForeignKey(Client, on_delete=models.CASCADE)
     referidos  = models.ManyToManyField(Client,related_name='referidos',blank=True)

@@ -53,6 +53,7 @@ def crearCarreras():
 
 def nearClient(latitud,longitud):
     cercanas=[]
+    dos_cercanas=[]
     listaCarreras=crearCarreras()
     posicion_driver= (latitud,longitud)
     for x in listaCarreras:
@@ -65,15 +66,20 @@ def nearClient(latitud,longitud):
             x.distancias=distancia
             print(x.distancias)
             cercanas.append(x)
+        
+    
             
     return cercanas
         
-def TakeService(hora_servicio):
+def TakeService(hora_servicio,id_cliente):
     carreras_activas=[]
     carreras = crearCarreras()
     for x in carreras:
-        if x.hora_peticion == hora_servicio:
+        print(x.hora_peticion,x.id,hora_servicio,id_cliente)
+        if x.hora_peticion == hora_servicio and x.id == id_cliente:
+            
             carrera_tomada=x
+            print("carrera tomada: ",carrera_tomada.name)
         else:
             carreras_activas.append(x)
             carrera_tomada=[]

@@ -45,8 +45,11 @@ INSTALLED_APPS = [
     'drivers',
     'cars',
     'home',
+    #'users',
     #de terceros
     'rest_framework',
+    'rest_framework.authtoken',
+    
     
    
 ]
@@ -124,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+#AUTH_USER_MODEL = 'clients.Client'
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
