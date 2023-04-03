@@ -72,6 +72,7 @@ def nearClient(latitud,longitud):
     return cercanas
         
 def TakeService(hora_servicio,id_cliente):
+    carrera_tomada=[]
     carreras_activas=[]
     carreras = crearCarreras()
     for x in carreras:
@@ -79,10 +80,11 @@ def TakeService(hora_servicio,id_cliente):
         if x.hora_peticion == hora_servicio and x.id == id_cliente:
             
             carrera_tomada=x
-            print("carrera tomada: ",carrera_tomada.name)
+            print("carrera tomada: ==============================",carrera_tomada.name)
         else:
             carreras_activas.append(x)
-            carrera_tomada=[]
+            
     cache.set('carreras',carreras_activas,timeout=None)
+    print("======================carreras activas: ",carreras_activas,"carrera tomada:===== ",carrera_tomada)
     return carrera_tomada
         

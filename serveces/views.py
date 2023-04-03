@@ -135,7 +135,7 @@ class ApiDriverTakeServices(CreateAPIView):
             return Response({"carrera":"no tiene saldo"})
         print(hora_de_peticion)
         carrera=TakeService(hora_de_peticion,id_cliente)
-        print(carrera,"esta es la carrera")
+        print(carrera,"esta es la carrera========================")
         if carrera==[]:
             return Response({"carrera":"ya ha sido tomada"})
         # guardar en base de datos el servivicio
