@@ -22,7 +22,7 @@ class Client(models.Model):
     img = models.ImageField( upload_to='Client', height_field=None, width_field=None, max_length=None,blank=True)
     imgcc = models.ImageField(verbose_name='documento de identidad', upload_to='Client', height_field=None, width_field=None, max_length=None,blank=True)
     tel = models.IntegerField(verbose_name='numero celular')
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE,blank=True,null=True)
+    #usuario = models.OneToOneField(User, on_delete=models.CASCADE,blank=True,null=True)
     
     is_active = models.BooleanField(default=False)
 
@@ -48,9 +48,6 @@ class Referido(models.Model):
     # modelo de referidos
     user = models.ForeignKey(Client, on_delete=models.CASCADE)
     referidos  = models.ManyToManyField(Client,related_name='referidos',blank=True)
-    
-
-   
     lazo = models.CharField( max_length=10,choices=lazos,default='amigo')
 
     class Meta:

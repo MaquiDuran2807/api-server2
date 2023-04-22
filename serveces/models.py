@@ -43,6 +43,8 @@ class Price(models.Model):
     ppkm = models.FloatField(verbose_name='precio por kilometro')
     ppm = models.FloatField(verbose_name='precio por minuto')
     pm = models.FloatField(verbose_name='precio minimo')
+    recargo_nocturno = models.FloatField(verbose_name='recargo nocturno', default=0.0)
+    recargo_festivo = models.FloatField(verbose_name='recargo festivo', default=0.0)
     fechainit = models.DateField(verbose_name="fecha de implementacion", auto_now=True, auto_now_add=False)
 
     # TODO: Define fields here

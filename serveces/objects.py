@@ -78,7 +78,6 @@ def TakeService(hora_servicio,id_cliente):
     for x in carreras:
         print(x.hora_peticion,x.id,hora_servicio,id_cliente)
         if x.hora_peticion == hora_servicio and x.id == id_cliente:
-            
             carrera_tomada=x
             print("carrera tomada: ==============================",carrera_tomada.name)
         else:

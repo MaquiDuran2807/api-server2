@@ -120,7 +120,7 @@ class ClientesInfo(View):
 
     def post(self,request):
         ci=json.loads(request.body)
-        listpop=["token","identification","genero","email","imgcc","tel"]
+        listpop=["token","identification","genero","email","imgcc"]
         clientes=list(Client.objects.filter(email=ci["correo"]).values())
         idcli=clientes[0]["id"]
         for i in listpop:
@@ -160,13 +160,13 @@ class ClientesCalification(View):
             Calificacion.objects.create(usuario=Client.objects.get(pk=cc["id"]),calificaciones=cc["calificacion"],comentario=cc["comentario"])
             servicio=Services.objects.filter(tpedido=cc["hora"]).update(tterminado=ahora)
             print(servicio)
-            Saldo.objects.create(usuario=Client.objects.get(pk=cc["mi_id"]),saldo=cc["precio"],frecarga=ahora)
+            #Saldo.objects.create(usuario=Client.objects.get(pk=cc["mi_id"]),saldo=cc["precio"],frecarga=ahora)
         else:
             Calificacion.objects.create(usuario=Client.objects.get(pk=cc["id"]),calificaciones=cc["calificacion"],comentario=cc["comentario"])
-            if cc["pago"]=="efectivo":
+            """if cc["pago"]=="efectivo":
                 return JsonResponse({"succes":"succes"})
             else:
-                Saldo.objects.create(usuario=Client.objects.get(pk=cc["mi_id"]),saldo=-cc["precio"],frecarga=ahora)    
+                Saldo.objects.create(usuario=Client.objects.get(pk=cc["mi_id"]),saldo=-cc["precio"],frecarga=ahora)"""    
         return JsonResponse({"calificacion":"calificado"})
 
 class ClientesNotification(View):

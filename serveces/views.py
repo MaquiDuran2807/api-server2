@@ -1,11 +1,15 @@
 from django.shortcuts import render
+# importe de modelos
+from clients.models import Client,Calificacion,Saldo
 from .models import Services,Price,CarrerasNoTomadas
+from cars.models import Auto
+#
 from django.http.response import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.views import View
-from clients.models import Client,Calificacion,Saldo
+
 from django.core.cache import cache
 from datetime import datetime, timedelta
 import datetime as dt
@@ -127,10 +131,13 @@ class ApiDriverTakeServices(CreateAPIView):
         horatake=(datetime.now().astimezone())
         saldo=Saldo.objects.filter(usuario_id=id_de_driver).latest('frecarga')
         diredencia_dias=(horatake-saldo.frecarga)
+        car= list(Auto.objects.filter(propietario=id_de_driver).values())
+        print(car,"este es el carro========================")
         print(diredencia_dias.days,"este es el numero de dias",timedelta(days=30).days,"este es el numero de dias")
-        if -(diredencia_dias.days)>=timedelta(days=30).days:
-            print("entro al if")
-            saldo=Saldo.objects.create(usuario_id=id_de_driver, saldo=0,frecarga=horatake)
+        if diredencia_dias.days>30:
+            print("entro al if  de mas de 30 dias este es el horatake",horatake)
+            saldo.saldo=0
+            saldo.save()
             print(saldo,"este es el saldo")
             return Response({"carrera":"no tiene saldo"})
         print(hora_de_peticion)
@@ -143,21 +150,14 @@ class ApiDriverTakeServices(CreateAPIView):
         dista=str(dista)
         dista=dista.replace('km',"")
         dista=float(dista)
-        horatake=(datetime.now().astimezone())
-        saldo=Saldo.objects.filter(usuario_id=id_de_driver).latest('frecarga')
-        diredencia_dias=(horatake-saldo.frecarga)
-        horatake=str(horatake)
         servicio=Services.objects.create(client_id=carrera.id, conductor_id=id_de_driver, latori=carrera.coordenadas["recogida"]['lat'], lngori=carrera.coordenadas["recogida"]['lng'], latdes=carrera.coordenadas["destino"]['lat'], lngdes=carrera.coordenadas["destino"]['lng'], distance=dista, testimado=carrera.viaje["testimado"], precio=carrera.viaje["precio"], tpedido = hora_de_peticion, ttake= horatake)
-        serializer=SerializadorCarreras(carrera)
-        serializer.data["id_carrera"]=servicio.id
-        
-        
-        print(serializer.data,"este es el saldo ", saldo,"esta es la diferencia de dias",diredencia_dias.days,"este es el tipo de dato",type(diredencia_dias))
-        if diredencia_dias.days>=30:
-            print("entro al if")
-            saldo=Saldo.objects.create(usuario_id=id_de_driver, saldo=0)
-            print(saldo,"este es el saldo")
-        return Response({"id_carrera":servicio.id,"carrera":serializer.data})
+        carro={"placa":car[0]["numero_placa"],"marca":car[0]["marca"],"color":car[0]["color"]}
+        print("entro al if de menos de 30 este es el horatake",horatake)
+        saldo.saldo=-(diredencia_dias.days-30)
+        saldo.save()
+        #saldo=Saldo.objects.create(usuario_id=id_de_driver, saldo=0,frecarga=horatake)
+        print(saldo,"este es el saldo")
+        return Response({"id_carrera":servicio.id,"car":carro })
     
 class ApiCancel(UpdateAPIView):
     """ vista para cancelar las carreras de los clientes"""

@@ -16,6 +16,7 @@ class SerializadorCarreras(serializers.Serializer):
     hora_peticion = serializers.DateTimeField()
     distancias = serializers.FloatField(required=False)
     id_carrera = serializers.IntegerField(required=False)
+    car=serializers.JSONField(required=False)
 
 class SerializadorCancel(serializers.ModelSerializer):
     class Meta:
