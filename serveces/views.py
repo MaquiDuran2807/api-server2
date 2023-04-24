@@ -166,7 +166,20 @@ class ApiCancel(UpdateAPIView):
     serializer_class=SerializadorCancel
     
 
+class ApiCancelClient(APIView):
+    """ vista para cancelar las carreras de los clientes"""
+    
+    def post(self,request,format=True):
+        # el cliente cancela la carrera antes de que el conductor la acepte
+        carrerac=[]
+        id_cliente=self.request.data['id_cliente']
+        hora_de_peticion=self.request.data['hora_peticion']
+        carrera=TakeService(hora_de_peticion,id_cliente)
+        carrerac.append(carrera)
+        serializer=SerializadorCarreras(carrerac,many=True)
+        print(id_cliente,hora_de_peticion)
 
+        return Response({"cancelada":serializer.data})
 
 class DriverServecesActiv(View):
 
