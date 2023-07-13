@@ -132,6 +132,7 @@ class ApiDriverTakeServices(CreateAPIView):
         try:
             saldo=Saldo.objects.filter(usuario_id=id_de_driver).latest('frecarga')
         except:
+            print("entro al except de saldo 0 este es el horatake",horatake,"==================================================================********************************************************")
             return Response({"carrera":"no tiene saldo"})
         diredencia_dias=(horatake-saldo.frecarga)
         car= list(Auto.objects.filter(propietario=id_de_driver).values())
