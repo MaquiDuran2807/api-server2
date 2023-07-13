@@ -122,6 +122,7 @@ class ClientesInfo(View):
         ci=json.loads(request.body)
         listpop=["token","identification","genero","email","imgcc"]
         clientes=list(Client.objects.filter(email=ci["correo"]).values())
+        print(clientes,"=====================")
         idcli=clientes[0]["id"]
         for i in listpop:
             clientes[0].pop(i)
